@@ -3,6 +3,44 @@ name: Build VPM Release
 on:
   workflow_dispatch:
 
+env:
+  releasePrefix: "PoiyomiToonShader"
+  repo: "rrazgriz/PoiyomiToonShaderTest"
+  packageName: "com.poiyomi.toon"
+  packagePath: "Packages/com.poiyomi.toon"
+  tempDir: "temp"
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.repo }}
+          path: './${{ env.tempDir }}/'
+          submodules: true
+
+      - name: Set Environment Variables to our target files
+        run: |
+          echo "zipFile=${{ env.packageName }}".zip >> $GITHUB_ENV
+          echo "unityPackage=${{ env.packageName }}.unitypackage" >> $GITHUB_ENV
+
+      - name: Create directory and move files
+        run: |
+          mkdir -p ${{env.packagePath}}          
+          cp -r "./${{ env.tempDir }}/_PoiyomiShaders/." "${{ env.packagePath }}"/
+          ls -la
+          ls -la ${{ env.packagePath }}
+
+      - name: Zip Files into release
+        run: |
+          cd ${{ env.packagePath }}
+          zip -qq -r ../../${{ env.zipFile }} .
+          cd ../../
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: ${{ github.workspace }}/${{ env.zipFile }}
