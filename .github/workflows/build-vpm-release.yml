@@ -14,7 +14,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout This Repo
+        uses: actions/checkout@v2
+        with:
+          path: .
+
+      - name: Checkout Poiyomi
         uses: actions/checkout@v2
         with:
           repository: ${{ env.repo }}
@@ -25,11 +30,24 @@ jobs:
         run: |
           echo "zipFile=${{ env.packageName }}".zip >> $GITHUB_ENV
           echo "unityPackage=${{ env.packageName }}.unitypackage" >> $GITHUB_ENV
+          echo "version=1.2.3" >> $GITHUB_ENV
 
-      - name: Create directory and move files
+      - name: Update package json version
+        uses: jossef/action-set-json-field@v2.1
+        with:
+          file: package-template.json
+          field: version
+          value: ${{ env.version }}
+
+      - name: Create directory and move + rename files
         run: |
-          mkdir -p ${{env.packagePath}}          
-          cp -r "./${{ env.tempDir }}/_PoiyomiShaders/." "${{ env.packagePath }}"/
+          mkdir -p ${{env.packagePath}}
+          mkdir -p ${{env.packagePath}}/Editor
+          mkdir -p ${{env.packagePath}}/Runtime
+          cp -r -v "./${{ env.tempDir }}/_PoiyomiShaders/." "${{ env.packagePath }}"/Runtime
+          mv -v "${{ env.packagePath }}"/Runtime/Scripts "${{ env.packagePath }}"/Editor
+          mv -v "${{ env.packagePath }}"/Runtime/Scripts.meta "${{ env.packagePath }}"/Editor
+          cp package-template.json ${{ env.packagePath }}/package.json
 
       - name: Zip Files into release
         run: |
