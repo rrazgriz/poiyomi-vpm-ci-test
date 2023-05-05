@@ -1,0 +1,17 @@
+{
+    "name": "com.poiyomi.toon",
+    "displayName": "Poiyomi Toon Shader",
+    "version": "0.0.0",
+    "description": " A feature-rich toon shader for VRChat and Unity BIRP.",
+    "url": "https://github.com/poiyomi/PoiyomiToonShader",
+    "author": {
+        "name": "Poiyomi"
+    },
+    "gitDependencies": {},
+    "vpmDependencies": {},
+    "legacyFolders": {"Assets/_PoiyomiShaders": "6268863691a4a0645bfaee5ba5e21b74"},
+    "legacyFiles": {},
+    "hideInEditor": false,
+    "license": "MIT",
+    "unity": "2019.4"
+}
