@@ -30,8 +30,6 @@ jobs:
         run: |
           mkdir -p ${{env.packagePath}}          
           cp -r "./${{ env.tempDir }}/_PoiyomiShaders/." "${{ env.packagePath }}"/
-          ls -la
-          ls -la ${{ env.packagePath }}
 
       - name: Zip Files into release
         run: |
@@ -39,20 +37,9 @@ jobs:
           zip -qq -r ../../${{ env.zipFile }} .
           cd ../../
 
-      - run: find "${{env.packagePath}}" -name \*.meta >> metaList
-
-      - name: Create UnityPackage
-        uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
-        with:
-          package-path: ${{ env.unityPackage }}
-          include-files: metaList
-
-      - run: ls -la
-
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: my-artifact
           path: |
             ${{ github.workspace }}/${{ env.zipFile }}
-            ${{ github.workspace }}/${{ env.unityPackage }}
